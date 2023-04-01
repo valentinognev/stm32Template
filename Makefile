@@ -1,7 +1,7 @@
 .PHONY: all build build-container cmake format format-linux flash-stlink flash-jlink format-container shell image build-container clean clean-image clean-all
 ############################### Native Makefile ###############################
 
-PROJECT_NAME ?= firmware
+PROJECT_NAME ?= blackpill
 BUILD_DIR ?= build
 FIRMWARE := $(BUILD_DIR)/$(PROJECT_NAME).bin
 BUILD_TYPE ?= Debug
@@ -54,6 +54,9 @@ DEVICE ?= STM32F407VG
 
 flash-st: build
 	st-flash --reset write $(FIRMWARE) 0x08000000
+
+flash-ocd: build
+	openocd -f ./openocd.cfg -c "program $(BUILD_DIR)/$(PROJECT_NAME).elf verify reset exit"
 
 $(BUILD_DIR)/jlink-script:
 	touch $@

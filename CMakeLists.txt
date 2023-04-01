@@ -49,7 +49,8 @@ set(STM32CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include)
 
-set(PROJECT_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR})
+set(PROJECT_INCLUDE_DIRECTORIES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Project/Inc)
 
 file(GLOB_RECURSE STM32CUBEMX_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.c
@@ -68,7 +69,8 @@ add_executable(${EXECUTABLE}
 target_compile_definitions(${EXECUTABLE} PRIVATE
     #$<$<CONFIG:Debug>:DEBUG>
     ${MCU_MODEL}
-    USE_HAL_DRIVER)
+    USE_HAL_DRIVER
+    USE_FULL_LL_DRIVER)
 
 target_include_directories(${EXECUTABLE} SYSTEM PRIVATE
     ${STM32CUBEMX_INCLUDE_DIRECTORIES})
@@ -93,7 +95,7 @@ target_compile_options(${EXECUTABLE} PRIVATE
         -Wold-style-cast
         -Wuseless-cast
         -Wsuggest-override>
-    $<$<CONFIG:Debug>:-Og -g3 -ggdb>
+    $<$<CONFIG:Debug>:-O0 -g3 -ggdb>
     $<$<CONFIG:Release>:-Og -g0>)
 
 target_link_options(${EXECUTABLE} PRIVATE
@@ -105,6 +107,7 @@ target_link_options(${EXECUTABLE} PRIVATE
     -lc
     -lm
     -lstdc++
+    -u _printf_float
     -Wl,--end-group
     -Wl,--print-memory-usage)
 ###############################################################################
